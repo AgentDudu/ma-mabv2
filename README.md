@@ -89,5 +89,5 @@ This will generate a matching .csv file right next to it in the results/ folder.
 
 ### Example Results
 
-![Regret Comparison](results\plot_1_regret_ConstantTotal_Thompson-Sampling_K100_T1000000.png)
-![Rolling Mean Reward Comparison](results\plot_3_rolling_reward_ConstantTotal_Thompson-Sampling_K100_T1000000.png)
+![Regret Comparison](results/plot_1_regret_ConstantTotal_Thompson-Sampling_K100_T1000000.png)
+![Rolling Mean Reward Comparison](results/plot_3_rolling_reward_ConstantTotal_Thompson-Sampling_K100_T1000000.png)
