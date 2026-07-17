@@ -37,8 +37,9 @@ def main():
     data = {key: npz_data[key] for key in npz_data.files}
 
     t_steps = data['t_steps']
-    k_arms = data.get('k_arms', 'Unknown')
     policy = data.get('policy', 'UCB')
+    # Hilangkan tanda hubung pada nama policy (Epsilon-Greedy -> Epsilon Greedy)
+    clean_policy_name = str(policy).replace('-', ' ')
     
     mal_colors = ['tab:orange', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive']
     mark_interval = max(1, int(len(t_steps) / 10))
@@ -55,7 +56,9 @@ def main():
     
     mal_keys = sorted([k for k in data.keys() if k.startswith('reg_mal_')], key=lambda x: int(x.split('_')[3].replace('m', '')))
 
-    # PLOT 1: Regret
+    # ==========================================
+    # PLOT 1: Cumulative Regret
+    # ==========================================
     plt.figure(figsize=(9, 5.5), dpi=150)
     if args.single and 'reg_single' in data:
         plt.plot(t_steps, data['reg_single'], label="Single-Agent Baseline", ls='--', color='tab:blue', marker='|', markevery=mark_interval, markersize=10)
@@ -68,7 +71,7 @@ def main():
             pct = int((m_val / (n_val + m_val)) * 100)
             plt.plot(t_steps, data[key], label=f"Malicious Attack ({pct}% Malicious)", ls='-.', color=mal_colors[c_idx % len(mal_colors)], marker='|', markevery=mark_interval, markersize=10)
 
-    plt.title(f"Cumulative Regret (Total 25 Agents) | {policy} - K={k_arms}")
+    plt.title(f"Cumulative Regret | {clean_policy_name}") # ---> JUDUL DIPERBARUI <---
     plt.xlabel(r"Time Horizon ($T$)")
     plt.ylabel(r"Average Cumulative Regret ($\frac{1}{n} \sum_{i=1}^n R_T^{(i)}$)")
     plt.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
@@ -76,7 +79,9 @@ def main():
     plt.tight_layout()
     plt.savefig(os.path.join(results_dir, f"plot_1_regret_{suffix}.png"))
 
-    # PLOT 3: Rolling Mean
+    # ==========================================
+    # PLOT 3: Rolling Mean Reward
+    # ==========================================
     plt.figure(figsize=(9, 5.5), dpi=150)
     rm_dict = {}
     if args.single and 'rew_single' in data:
@@ -94,7 +99,7 @@ def main():
             rm_dict[key] = get_rolling_mean(data[rew_key], window_size)
             plt.plot(t_steps, rm_dict[key], label=f"Malicious Attack ({pct}% Malicious)", ls='-.', color=mal_colors[c_idx % len(mal_colors)])
 
-    plt.title(f"{window_size}-Round Rolling Mean (Total 25 Agents) | {policy} - K={k_arms}")
+    plt.title(f"Moving Average | {clean_policy_name}") # ---> JUDUL DIPERBARUI <---
     plt.xlabel(r"Time Horizon ($T$)")
     plt.ylabel(r"Average Reward")
     plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
